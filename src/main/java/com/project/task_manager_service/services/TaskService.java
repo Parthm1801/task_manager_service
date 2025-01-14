@@ -1,10 +1,14 @@
 package com.project.task_manager_service.services;
 
 import com.project.task_manager_service.entitiy.Task;
+import com.project.task_manager_service.entitiy.User;
 import com.project.task_manager_service.repositories.TaskRepository;
+import com.project.task_manager_service.repositories.UserRepository;
+import com.project.task_manager_service.type.TaskDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +17,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     public Task createTask(Task task) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        task.setUser(user);
         return taskRepository.save(task);
     }
 
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<TaskDTO> getAllTasksForUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Task> taskList =  taskRepository.findByUserId(user.getId());
+        return taskList.stream().map(task ->
+                        TaskDTO.builder()
+                                .title(task.getTitle())
+                                .status(task.getStatus())
+                                .deadline(task.getDeadline())
+                                .description(task.getDescription())
+                                .id(task.getId())
+                                .priority(task.getPriority())
+                                .build()
+                ).toList();
     }
 
     public Task getTaskById(Long id) {

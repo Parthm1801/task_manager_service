@@ -2,6 +2,7 @@ package com.project.task_manager_service.controller;
 
 import com.project.task_manager_service.entitiy.Task;
 import com.project.task_manager_service.services.TaskService;
+import com.project.task_manager_service.type.TaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        return ResponseEntity.ok(taskService.getAllTasksForUser());
     }
 
     @GetMapping("/{id}")
