@@ -2,6 +2,7 @@ package com.project.task_manager_service.services;
 
 import com.project.task_manager_service.entitiy.Task;
 import com.project.task_manager_service.entitiy.User;
+import com.project.task_manager_service.exception.ResourceNotFoundException;
 import com.project.task_manager_service.repositories.TaskRepository;
 import com.project.task_manager_service.repositories.UserRepository;
 import com.project.task_manager_service.type.TaskDTO;
@@ -30,7 +31,7 @@ public class TaskService {
     public List<TaskDTO> getAllTasksForUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         List<Task> taskList =  taskRepository.findByUserId(user.getId());
         return taskList.stream().map(task ->
                         TaskDTO.builder()
