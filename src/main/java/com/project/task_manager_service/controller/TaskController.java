@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +44,8 @@ public class TaskController {
         return ResponseEntity.ok(taskService.updateTask(task));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteTaskById(@PathVariable Long id) {
         taskService.deleteTaskById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
