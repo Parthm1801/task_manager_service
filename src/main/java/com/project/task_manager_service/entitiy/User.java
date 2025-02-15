@@ -1,5 +1,6 @@
 package com.project.task_manager_service.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.task_manager_service.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -24,6 +26,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private String email;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 }

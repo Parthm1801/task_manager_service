@@ -1,5 +1,8 @@
 package com.project.task_manager_service.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.task_manager_service.enums.TaskEvent;
 import com.project.task_manager_service.enums.TaskPriority;
 import com.project.task_manager_service.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -36,7 +39,11 @@ public class Task {
     @NotNull(message = "Status is required")
     private TaskStatus status;
 
+    @Transient
+    TaskEvent event;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 }

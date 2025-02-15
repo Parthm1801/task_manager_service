@@ -1,6 +1,7 @@
 package com.project.task_manager_service.controller;
 
 import com.project.task_manager_service.entitiy.Task;
+import com.project.task_manager_service.enums.TaskEvent;
 import com.project.task_manager_service.services.TaskService;
 import com.project.task_manager_service.type.TaskDTO;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,15 @@ public class TaskController {
     @PatchMapping
     public ResponseEntity<Task> updateTask(@RequestBody Task task) {
         return ResponseEntity.ok(taskService.updateTask(task));
+    }
+
+    @PatchMapping("update-task/{id}/{event}")
+    public ResponseEntity<?> updateTaskById(@PathVariable Long id, @PathVariable TaskEvent event) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(taskService.updateTaskState(id, event));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
